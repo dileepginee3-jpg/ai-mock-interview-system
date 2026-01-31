@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Report | AI Coach</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-body: #0f172a;
+            --bg-card: #1e293b;
+            --text-main: #94a3b8;
+            --text-heading: #f1f5f9;
+            --text-muted: #64748b;
+            --border-light: #334155;
+            --shadow-card: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+            --radius-card: 16px;
+            --primary-soft: rgba(79, 70, 229, 0.15);
+            --primary-text: #818cf8;
+            --success-soft: rgba(16, 185, 129, 0.15);
+            --success-text: #34d399;
+            --warning-soft: rgba(245, 158, 11, 0.15);
+            --warning-text: #fbbf24;
+            --danger-soft: rgba(239, 68, 68, 0.15);
+            --danger-text: #f87171;
+        }
+
+        body {
+            background-color: var(--bg-body) !important;
+            color: var(--text-main) !important;
+        }
+
+        /* Override global styles for this page */
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            color: var(--text-heading) !important;
+        }
+
+        .container {
+            max-width: 900px !important;
+        }
+
+        /* Navbar/Header Override */
+        header {
+            background-color: transparent !important;
+            box-shadow: none !important;
+            padding: 20px 0 !important;
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            color: var(--text-heading) !important;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .score-banner {
+            background: var(--bg-card) !important;
+            color: var(--text-main) !important;
+            border-radius: var(--radius-card);
+            box-shadow: var(--shadow-card);
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 40px;
+            border: 1px solid var(--border-light);
+        }
+
+        .score-display {
+            font-size: 4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #4F46E5 0%, #06B6D4 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 10px 0;
+        }
+
+        .result-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-card);
+            box-shadow: var(--shadow-card);
+            padding: 30px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border-light);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .result-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        }
+
+        .score-badge {
+            border-radius: 50px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-high {
+            background-color: var(--success-soft) !important;
+            color: var(--success-text) !important;
+        }
+
+        .badge-mid {
+            background-color: var(--warning-soft) !important;
+            color: var(--warning-text) !important;
+        }
+
+        .badge-low {
+            background-color: var(--danger-soft) !important;
+            color: var(--danger-text) !important;
+        }
+
+        .qa-box {
+            background-color: #0f172a;
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+
+        .qa-label {
+            display: inline-block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            padding: 4px 10px;
+            border-radius: 6px;
+        }
+
+        .text-user {
+            background-color: var(--primary-soft);
+            color: var(--primary-text);
+        }
+
+        .text-ref {
+            background-color: var(--success-soft);
+            color: var(--success-text);
+        }
+
+        .btn-secondary {
+            background-color: var(--bg-card) !important;
+            color: var(--text-main) !important;
+            border: 1px solid var(--border-light) !important;
+            box-shadow: var(--shadow-card);
+        }
+
+        .btn-secondary:hover {
+            background-color: #2d3748 !important;
+            color: var(--text-heading) !important;
+        }
+    </style>
+
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>Performance Report</h1>
+            </div>
+            <a href="/" class="btn btn-secondary" style="padding: 8px 16px; font-size: 0.95rem;">Back to Home</a>
+        </div>
+    </header>
+
+    <div class="container animate-fade-up">
+
+        <!-- Score Banner -->
+        <div class="score-banner">
+            <p
+                style="text-transform: uppercase; letter-spacing: 2px; font-size: 0.9rem; color: var(--text-muted); font-weight: 600; margin-bottom: 0;">
+                Overall Score</p>
+            <div class="score-display">{{ score }}%</div>
+            <p style="color: var(--text-muted); font-size: 1.1rem;">
+                Performance analysis based on NLP evaluation of your technical answers.
+            </p>
+        </div>
+
+        <div style="margin-bottom: 40px;">
+            <canvas id="scoreChart" data-labels='{{ labels | tojson | safe }}'
+                data-scores='{{ scores | tojson | safe }}' width="400" height="150"></canvas>
+        </div>
+
+        <h3 style="margin-bottom: 25px; font-size: 1.8rem;">Detailed Analysis</h3>
+
+        <div class="results-list">
+            {% for detail in details %}
+            <div class="result-card">
+                <div class="result-header">
+                    <div style="flex: 1;">
+                        <span style="font-size: 1rem; color: var(--text-muted); font-weight: 600;">QUESTION</span>
+                        <h4 style="font-size: 1.4rem; margin-top: 8px; color: var(--text-main); line-height: 1.5;">{{
+                            detail.question }}
+                        </h4>
+                    </div>
+                    <div>
+                        {% if detail.score >= 70 %}
+                        <span class="score-badge badge-high" style="font-size: 0.95rem; padding: 8px 16px;">{{
+                            detail.score }}%</span>
+                        {% elif detail.score >= 40 %}
+                        <span class="score-badge badge-mid" style="font-size: 0.95rem; padding: 8px 16px;">{{
+                            detail.score }}%</span>
+                        {% else %}
+                        <span class="score-badge badge-low" style="font-size: 0.95rem; padding: 8px 16px;">{{
+                            detail.score }}%</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="qa-grid">
+                    <div class="qa-box">
+                        <span class="qa-label text-user" style="font-size: 0.9rem;">Your Answer</span>
+                        <p style="font-size: 1.15rem; color: var(--text-main); line-height: 1.7;">{{ detail.user_answer
+                            }}</p>
+                    </div>
+                    <div class="qa-box">
+                        <span class="qa-label text-ref" style="font-size: 0.9rem;">Ideal Answer</span>
+                        <p style="font-size: 1.15rem; color: var(--text-main); line-height: 1.7;">{{
+                            detail.reference_answer }}</p>
+                    </div>
+                </div>
+
+                <div
+                    style="margin-top: 20px; padding-top: 20px; border-top: 1px dashed var(--border-light); font-size: 1rem; color: var(--text-muted); line-height: 1.6;">
+                    <strong style="color: var(--text-heading);">AI Feedback:</strong> {{ detail.feedback }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div style="text-align: center; margin: 50px 0;">
+            <a href="/" class="btn btn-primary" style="font-size: 1.2rem; padding: 15px 30px;">Take Another
+                Interview</a>
+        </div>
+    </div>
+    <script>
+        const chartCanvas = document.getElementById('scoreChart');
+        const ctx = chartCanvas.getContext('2d');
+        const labels = JSON.parse(chartCanvas.dataset.labels);
+        const data = JSON.parse(chartCanvas.dataset.scores);
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Score per Question',
+                    data: data,
+                    backgroundColor: data.map(score => {
+                        if (score >= 70) return 'rgba(52, 211, 153, 0.6)';
+                        if (score >= 40) return 'rgba(251, 191, 36, 0.6)';
+                        return 'rgba(248, 113, 113, 0.6)';
+                    }),
+                    borderColor: data.map(score => {
+                        if (score >= 70) return 'rgba(52, 211, 153, 1)';
+                        if (score >= 40) return 'rgba(251, 191, 36, 1)';
+                        return 'rgba(248, 113, 113, 1)';
+                    }),
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        grid: {
+                            color: '#334155', // darker border
+                            borderDash: [5, 5]
+                        },
+                        ticks: {
+                            color: '#94a3b8', // text-main
+                            font: { size: 12 }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: '#94a3b8', // text-main
+                            font: { size: 12 }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#cbd5e1', // text-mainish
+                            font: { size: 12, weight: 'bold' },
+                            usePointStyle: true,
+                            boxWidth: 8
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

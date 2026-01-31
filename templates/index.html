@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Interview Coach | MCA Project</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        :root {
+            --bg-body: #0f172a;
+            --bg-card: #1e293b;
+            --text-main: #94a3b8;
+            --text-heading: #f1f5f9;
+            --text-muted: #64748b;
+            --border-light: #334155;
+            --shadow-card: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+            --radius-card: 20px;
+            --primary-soft: rgba(79, 70, 229, 0.15);
+            --primary-text: #818cf8;
+            --accent-gradient: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
+        }
+
+        body {
+            background-color: var(--bg-body) !important;
+            color: var(--text-main) !important;
+        }
+
+        /* Navbar Override */
+        header {
+            background-color: transparent !important;
+            box-shadow: none !important;
+            padding: 30px 0 !important;
+        }
+
+        header .logo h1 {
+            color: var(--text-heading) !important;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-link {
+            color: var(--text-muted) !important;
+            font-weight: 600;
+        }
+
+        .nav-link:hover {
+            color: var(--primary-text) !important;
+        }
+
+        /* Hero Section */
+        .hero-title {
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 3.5rem !important;
+            letter-spacing: -1px;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            /* Prevent clipped descenders */
+        }
+
+        .hero-desc {
+            color: var(--text-muted) !important;
+            font-size: 1.2rem !important;
+            line-height: 1.8;
+            max-width: 650px;
+        }
+
+        /* Cards */
+        .card-option {
+            background: var(--bg-card) !important;
+            border: 1px solid var(--border-light) !important;
+            border-radius: var(--radius-card) !important;
+            box-shadow: var(--shadow-card) !important;
+            padding: 40px 30px !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
+        .card-option:hover {
+            transform: translateY(-8px) !important;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2) !important;
+            border-color: rgba(99, 102, 241, 0.5) !important;
+        }
+
+        .card-icon {
+            font-size: 2.5rem !important;
+            background: var(--primary-soft) !important;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin-bottom: 25px !important;
+        }
+
+        h3 {
+            color: var(--text-heading) !important;
+            font-size: 1.5rem !important;
+            font-weight: 700 !important;
+        }
+
+        .btn {
+            border-radius: 50px !important;
+            padding: 12px 30px !important;
+            font-weight: 600 !important;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.85rem !important;
+        }
+
+        .btn-primary {
+            background: var(--accent-gradient) !important;
+            box-shadow: 0 4px 14px 0 rgba(99, 102, 241, 0.39) !important;
+            border: none !important;
+        }
+
+        .btn-secondary {
+            background: var(--bg-card) !important;
+            color: var(--text-main) !important;
+            border: 1px solid var(--border-light) !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2) !important;
+        }
+
+        .btn-secondary:hover {
+            background: #2d3748 !important;
+            border-color: var(--border-light) !important;
+        }
+
+        footer {
+            border-top: 1px solid var(--border-light) !important;
+            color: var(--text-muted) !important;
+        }
+    </style>
+
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <span style="font-size: 1.5rem;">🎓</span>
+                <h1>AI Interview Coach</h1>
+            </div>
+            <nav>
+                <a href="#" class="nav-link">About Project</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <section class="hero-section animate-fade-up">
+            <h1 class="hero-title animate-slide-in">Master Your Interview Skills<br>with AI Feedback</h1>
+            <p class="hero-desc">An intelligent practice system that accepts your answers, uses NLP to evaluate them
+                against reference data, and provides instant scoring.</p>
+
+            <div class="interview-cards">
+                <div class="card-option">
+                    <div class="card-icon">💻</div>
+                    <h3>Technical Round</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px;">Questions on Python,
+                        OOPs, Flask,
+                        and core CS concepts.</p>
+                    <a href="/interview?category=Technical" class="btn btn-primary"
+                        style="width: 100%; text-align: center;">Start Technical</a>
+                </div>
+
+                <div class="card-option">
+                    <div class="card-icon">🤝</div>
+                    <h3>HR Round</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px;">Behavioral questions on
+                        strengths, weakness, and goals.</p>
+                    <a href="/interview?category=HR" class="btn btn-secondary"
+                        style="width: 100%; text-align: center;">Start HR Session</a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>Developed for MCA Academic Submission | VTU Curriculum</p>
+    </footer>
+</body>
+
+</html>
